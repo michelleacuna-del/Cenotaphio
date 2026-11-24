@@ -1144,6 +1144,7 @@ let eyeTrackerLoader = null;
 let eyeTrackerActive = false;
 let eyeTrackerStarting = false;
 let eyeTrackerStartCancelled = false;
+const WEBGAZER_CDN = 'https://cdn.jsdelivr.net/npm/webgazer@3.5.3/dist';
 
 function cargarWebGazer() {
   if (window.webgazer) return Promise.resolve(window.webgazer);
@@ -1152,7 +1153,7 @@ function cargarWebGazer() {
   window.saveDataAcrossSessions = false;
   eyeTrackerLoader = new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/webgazer@3.5.3/dist/webgazer.js';
+    script.src = `${WEBGAZER_CDN}/webgazer.js`;
     script.integrity = 'sha384-N9TfYQEjUGiaDcITkzB/MtVHEfF2JtTWCwHG8NUhjOSvJ8zObGwfebHUFLBS+4Rb';
     script.crossOrigin = 'anonymous';
     script.onload = () => window.webgazer
@@ -1252,9 +1253,19 @@ async function iniciarEyeTracker() {
   eyeTrackerStop.hidden = false;
   eyeTrackerStop.textContent = 'Cancelar';
   eyeTrackerStatus.textContent = 'Preparando el seguimiento de mirada…';
+  let etapaInicio = 'permiso';
   let eyeTrackerBeginAttempted = false;
 
   try {
+    const streamPermiso = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    streamPermiso.getTracks().forEach(track => track.stop());
+    if (eyeTrackerStartCancelled || eyeTrackerPanel.hidden) {
+      eyeTrackerStatus.textContent = 'Inicio cancelado. La cámara no se activó.';
+      restaurarBotonesEyeTracker();
+      return;
+    }
+
+    etapaInicio = 'carga';
     const webgazer = await cargarWebGazer();
     if (eyeTrackerStartCancelled || eyeTrackerPanel.hidden) {
       eyeTrackerStatus.textContent = 'Inicio cancelado. La cámara no se activó.';
@@ -1262,6 +1273,7 @@ async function iniciarEyeTracker() {
       return;
     }
     webgazer.saveDataAcrossSessions(false);
+    webgazer.params.faceMeshSolutionPath = `${WEBGAZER_CDN}/mediapipe/face_mesh`;
     webgazer.showVideo(false);
     webgazer.showFaceOverlay(false);
     webgazer.showFaceFeedbackBox(false);
@@ -1272,6 +1284,7 @@ async function iniciarEyeTracker() {
       eyeTrackerGaze.style.top = `${Math.max(0, Math.min(window.innerHeight, data.y))}px`;
       eyeTrackerGaze.hidden = false;
     });
+    etapaInicio = 'webgazer';
     eyeTrackerBeginAttempted = true;
     await webgazer.begin();
     if (eyeTrackerStartCancelled || eyeTrackerPanel.hidden) {
@@ -1295,21 +1308,29 @@ async function iniciarEyeTracker() {
     let falloLimpieza = false;
     if (window.webgazer) {
       const camaraIniciada = eyeTrackerBeginAttempted
-        && error.name !== 'NotAllowedError'
-        && error.name !== 'NotFoundError';
+        && Boolean(window.webgazer.getVideoElementCanvas?.());
       falloLimpieza = await limpiarWebGazer(window.webgazer, camaraIniciada, camaraIniciada);
     }
     eyeTrackerGaze.hidden = true;
     restaurarBotonesEyeTracker();
-    eyeTrackerStatus.textContent = falloLimpieza
-      ? 'No se pudo detener o limpiar la prueba. Cierra la página para liberar la cámara.'
-      : cancelado
-        ? 'Inicio cancelado. La cámara está apagada.'
-        : error.name === 'NotAllowedError'
-          ? 'No se concedió permiso para usar la cámara.'
-          : error.name === 'NotFoundError'
-            ? 'No se encontró una cámara disponible.'
-            : 'No se pudo iniciar la prueba. Revisa el permiso de cámara e inténtalo otra vez.';
+    if (falloLimpieza) {
+      eyeTrackerStatus.textContent = 'No se pudo detener o limpiar la prueba. Cierra la página para liberar la cámara.';
+    } else if (cancelado) {
+      eyeTrackerStatus.textContent = 'Inicio cancelado. La cámara está apagada.';
+    } else if (error.name === 'NotAllowedError' && etapaInicio === 'permiso') {
+      eyeTrackerStatus.textContent = 'El navegador o el sistema bloqueó la cámara. Comprueba los permisos del sitio y del dispositivo, y abre la web directamente en HTTPS.';
+    } else if (error.name === 'NotAllowedError') {
+      eyeTrackerStatus.textContent = 'El acceso previo a la cámara fue concedido, pero WebGazer no pudo abrirla. Revisa si otra aplicación la está usando y vuelve a intentarlo.';
+    } else if (error.name === 'NotFoundError') {
+      eyeTrackerStatus.textContent = 'No se encontró una cámara disponible.';
+    } else if (error.name === 'NotReadableError') {
+      eyeTrackerStatus.textContent = 'El permiso fue concedido, pero la cámara no se pudo abrir. Cierra otras aplicaciones que puedan estar usándola.';
+    } else {
+      const detalle = error instanceof Error
+        ? `${error.name}: ${error.message}`
+        : String(error);
+      eyeTrackerStatus.textContent = `No se pudo iniciar WebGazer (${detalle}).`;
+    }
   }
 }
 
