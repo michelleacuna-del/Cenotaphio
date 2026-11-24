@@ -151,10 +151,6 @@
       <section class="cielo-explorar" aria-label="Altares en el cielo compartido">
         <div class="cielo" id="cielo" role="group" aria-label="Cielo estrellado. Selecciona un altar para ver su nombre o elige un punto vacío para ubicar tu altar.">
           <span class="cielo-luna" aria-hidden="true"></span>
-          <svg class="cielo-trazo" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M75 310 188 214 285 252 390 120 520 176 622 95 730 166 864 82 931 164"/>
-            <path d="M188 214 250 365 390 120 478 340 622 95 704 350 864 82"/>
-          </svg>
           <div class="cielo-estrellas" id="cielo-estrellas"></div>
         </div>
         <div class="cielo-panel">
@@ -281,8 +277,7 @@
         <p>Los altares son públicos por defecto y pueden mostrarse en «Explorar» cuando tienen una ubicación simbólica. Puedes marcar un altar como privado para que no aparezca allí. La ubicación del cielo es simbólica y no muestra una dirección real.</p>
 
         <h2>Almacenamiento y servicios externos</h2>
-        <p>El navegador puede conservar preferencias de visualización y datos antiguos de altares. La importación de esos datos a una cuenta requiere tu confirmación. La aplicación usa Supabase para la cuenta y los respaldos, Google Fonts para cargar algunas tipografías y WebGazer.js opcionalmente para pruebas de seguimiento visual.</p>
-        <p>El seguimiento visual solo comienza si lo activas y autorizas el acceso a la cámara. WebGazer se descarga desde jsDelivr al iniciar; ese servicio recibe la solicitud técnica habitual para entregar el código. El video y los puntos de mirada se procesan solo en este navegador, no se envían ni se guardan. Al detener la prueba se elimina también la calibración de la sesión.</p>
+        <p>El navegador puede conservar preferencias de visualización y datos antiguos de altares. La importación de esos datos a una cuenta requiere tu confirmación. La aplicación usa Supabase para la cuenta y los respaldos, y Google Fonts para cargar algunas tipografías.</p>
 
         <h2>Consultas</h2>
         <p>Para consultas sobre privacidad, escribe a <a href="mailto:mi.acunaparra@gmail.com">mi.acunaparra@gmail.com</a>.</p>
@@ -609,27 +604,8 @@
 
   </template>
 
-  <aside class="eye-tracker" aria-label="Herramienta de prueba de mirada">
-    <button class="eye-tracker-toggle" id="eye-tracker-toggle" type="button" aria-expanded="false" aria-controls="eye-tracker-panel">Prueba de mirada</button>
-    <section class="eye-tracker-panel" id="eye-tracker-panel" aria-labelledby="eye-tracker-title" hidden>
-      <div class="eye-tracker-heading">
-        <h2 id="eye-tracker-title">Eye tracker</h2>
-        <button class="eye-tracker-close" id="eye-tracker-close" type="button" aria-label="Cerrar prueba de mirada">×</button>
-      </div>
-      <p>Al iniciar, WebGazer se descargará desde jsDelivr y pedirá acceso a tu cámara. El video y la mirada se procesan solo en este navegador; no se guardan ni envían.</p>
-      <p>Para calibrar, mira hacia el cursor mientras haces clic en distintos lugares.</p>
-      <div class="eye-tracker-actions">
-        <button class="btn btn-principal" id="eye-tracker-start" type="button">Iniciar prueba</button>
-        <button class="btn btn-suave" id="eye-tracker-stop" type="button" hidden>Detener</button>
-      </div>
-      <p class="eye-tracker-status" id="eye-tracker-status" role="status" aria-live="polite">La cámara está apagada.</p>
-      <a class="eye-tracker-license" href="https://github.com/brownhci/WebGazer/blob/master/LICENSE.md" target="_blank" rel="noopener noreferrer">WebGazer.js 3.5.3 · GPL-3.0-or-later</a>
-    </section>
-  </aside>
-  <span class="eye-tracker-gaze" id="eye-tracker-gaze" aria-hidden="true" hidden></span>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
+  <script src="supabase-config.js?v=2"></script>
   <script src="app.js"></script>
 </body>
 </html>
