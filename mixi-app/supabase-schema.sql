@@ -76,3 +76,4 @@ $$;
 
 revoke all on function public.get_public_altars() from public, anon, authenticated;
 grant execute on function public.get_public_altars() to anon, authenticated;
+run
