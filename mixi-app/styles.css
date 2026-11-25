@@ -747,29 +747,53 @@ img { display: block; max-width: 100%; }
   order: -1;
   inset: auto;
   flex: 0 0 auto;
-  width: min(420px, calc(100% - 24px));
-  margin: clamp(1rem, 3vh, 2rem) var(--gutter) .75rem;
+  width: 100%;
+  min-height: 202px;
+  margin: 0;
+  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .65rem;
-  padding: .8rem 1rem;
-  border: 1px solid rgba(208, 190, 163, .24);
-  border-radius: 18px;
-  background: rgba(17, 21, 34, .78);
+  justify-content: center;
+  gap: .75rem;
+  border: 0;
+  border-radius: 0;
+  background: #2b2b2b;
   color: #f5efe3;
-  box-shadow: 0 10px 30px rgba(6, 8, 15, .18);
 }
 .cielo-acciones {
   display: flex;
-  width: min(100%, 420px);
+  width: min(100%, 565px);
   align-items: flex-end;
   justify-content: center;
-  gap: .6rem;
+  gap: .65rem;
 }
 .cielo-selector { flex: 1; min-width: 0; margin: 0; }
-.cielo-selector span { color: rgba(245, 239, 227, .76); font-size: .75rem; }
-.cielo-selector select { width: 100%; min-width: 0; min-height: 42px; padding: .5rem .7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; }
+.cielo-selector span { color: rgba(245, 239, 227, .76); font-size: .78rem; letter-spacing: .16em; }
+.cielo-selector select {
+  width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  padding: .65rem 1rem;
+  border: 1px solid #555;
+  border-radius: 12px;
+  background: #2b2b2b;
+  color: #d3d0cc;
+  color-scheme: dark;
+  font: inherit;
+  font-size: 1.08rem;
+}
+.cielo-acciones .btn-principal {
+  flex: 0 0 36%;
+  min-height: 60px;
+  padding: .9rem 1.25rem;
+  background: #f2ede5;
+  color: #2b2b2b;
+  font-size: 1.05rem;
+  font-weight: 200;
+}
+.cielo-acciones .btn-principal:hover { background: #e8e0d3; }
+.cielo-acciones .btn-principal:disabled { cursor: default; }
 #cielo-seleccion { margin: 0; font-size: 1.05rem; }
 .cielo-mensaje { margin: .25rem 0 0; color: rgba(245, 239, 227, .76); font-size: .82rem; }
 .cielo-coordenadas {
@@ -1183,6 +1207,7 @@ dialog.modal::backdrop { background: rgba(18, 14, 10, .4); backdrop-filter: blur
 }
 #acceso .modal-caja {
   --surface: #c5ecff;
+  --bg: #c5ecff;
   --ink: #2b2b2b;
   --ink-soft: #4b5a63;
   --line: #9ebdcb;
@@ -1387,8 +1412,10 @@ dialog.modal::backdrop { background: rgba(18, 14, 10, .4); backdrop-filter: blur
   .pie-logo,
   .pie-enlaces { align-self: flex-start; }
   .pie p { max-width: 100%; overflow-wrap: anywhere; }
-  .cielo-panel { margin: 12px; padding: .65rem; }
-  .cielo-acciones { align-items: flex-end; }
+  .cielo-panel { min-height: 180px; padding: 1.5rem 1rem; }
+  .cielo-acciones { align-items: flex-end; gap: .5rem; }
+  .cielo-selector select { padding-inline: .65rem; font-size: .9rem; }
+  .cielo-acciones .btn-principal { flex-basis: 40%; padding-inline: .65rem; font-size: .9rem; }
   .cielo-coordenadas { align-items: stretch; flex-direction: column; }
   .cielo-coordenadas label { min-width: 0; }
 }

@@ -338,7 +338,7 @@ function pintarCielo() {
   opcionInicial.selected = true;
   opcionInicial.textContent = usuarioActual
     ? publicos.length ? 'Elige un altar' : 'No tienes altares públicos'
-    : clienteSupabase ? 'Inicia sesión o crea una cuenta para elegir un altar' : 'Exploración pública';
+    : clienteSupabase ? 'Inicia sesión o crea una cuenta' : 'Exploración pública';
   selector.append(opcionInicial);
   for (const perfil of publicos) {
     const opcion = document.createElement('option');
