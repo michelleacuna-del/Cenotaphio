@@ -297,9 +297,6 @@ function pintarCielo() {
   }));
   const idsLocales = new Set(locales.map(altar => altar.id));
   const altares = [
-    ...referencias.filter(p => !p.privado && puntoCieloValido(p.puntoCielo)).map(p => ({
-      id: p.id, nombre: p.nombre, ...p.puntoCielo, ejemplo: true
-    })),
     ...remotos.filter(altar => !idsLocales.has(altar.id)),
     ...locales
   ];
@@ -307,11 +304,11 @@ function pintarCielo() {
   for (const altar of altares) {
     const estrella = document.createElement('button');
     estrella.type = 'button';
-    estrella.className = `cielo-estrella${altar.ejemplo ? ' cielo-estrella-ejemplo' : ''}`;
+    estrella.className = 'cielo-estrella';
     estrella.style.left = `${altar.x}%`;
     estrella.style.top = `${altar.y}%`;
     estrella.dataset.altar = altar.id;
-    estrella.setAttribute('aria-label', `Altar de ${altar.nombre}${altar.ejemplo ? ', ejemplo de referencia' : ''}`);
+    estrella.setAttribute('aria-label', `Altar de ${altar.nombre}`);
     estrella.setAttribute('aria-pressed', String(altar.id === altarSeleccionado));
     const nombre = document.createElement('span');
     nombre.className = 'cielo-nombre';
@@ -324,9 +321,8 @@ function pintarCielo() {
     : 'Cielo estrellado sin altares ubicados todavía.');
   const seleccionado = altares.find(altar => altar.id === altarSeleccionado);
   if (seleccionado) {
-    $('#cielo-seleccion').textContent = seleccionado.ejemplo
-      ? `Altar de ${seleccionado.nombre} · ejemplo de referencia.`
-      : `Altar de ${seleccionado.nombre} · su ubicación es simbólica y no muestra una dirección.`;
+    $('#cielo-seleccion').textContent =
+      `Altar de ${seleccionado.nombre} · su ubicación es simbólica y no muestra una dirección.`;
   } else {
     altarSeleccionado = null;
     $('#cielo-seleccion').textContent = altares.length
@@ -421,13 +417,11 @@ $('#cielo').addEventListener('click', e => {
     const altar = estrella.dataset.altar;
     altarSeleccionado = altar;
     $$('.cielo-estrella', $('#cielo')).forEach(el => el.setAttribute('aria-pressed', String(el === estrella)));
-    const perfil = referencias.find(p => p.id === altar);
     const local = perfilesVisibles().find(p => p.id === altar);
     const publico = altaresPublicos.find(p => p.id === altar);
-    const nombre = perfil?.nombre || local?.nombre || publico?.nombre || 'este altar';
-    $('#cielo-seleccion').textContent = perfil
-      ? `Altar de ${nombre} · ejemplo de referencia.`
-      : `Altar de ${nombre} · su ubicación es simbólica y no muestra una dirección.`;
+    const nombre = local?.nombre || publico?.nombre || 'este altar';
+    $('#cielo-seleccion').textContent =
+      `Altar de ${nombre} · su ubicación es simbólica y no muestra una dirección.`;
     if (altarEnColocacion) $('#cielo-mensaje').textContent = 'Toca un punto dentro de la imagen para ubicar el altar que elegiste.';
     return;
   }
@@ -453,7 +447,6 @@ $('#cielo-guardar-punto').addEventListener('click', () => {
   guardarPuntoCielo(Number($('#cielo-x').value), Number($('#cielo-y').value));
 });
 async function cargarAltaresPublicos() {
-  const ejemplos = !clienteSupabase;
   try {
     if (clienteSupabase) {
       const { data, error } = await clienteSupabase.rpc('get_public_altars');
@@ -466,15 +459,17 @@ async function cargarAltaresPublicos() {
         ? 'Aquí aparecen los altares públicos que ya eligieron su punto.'
         : 'Aún no hay altares públicos ubicados; puedes ser la primera persona en elegir un punto.';
     } else {
-      $('#cielo-mensaje').textContent = 'Estás viendo altares de ejemplo. Puedes explorar sin iniciar sesión.';
+      altaresPublicos = [];
+      $('#cielo-mensaje').textContent = 'Las estrellas públicas aparecerán aquí cuando haya altares ubicados.';
     }
   } catch (error) {
     console.error('No se pudieron cargar los altares públicos para Explorar.', error);
-    $('#cielo-mensaje').textContent = 'No se pudieron cargar todos los altares públicos. Mostramos los ejemplos disponibles.';
+    altaresPublicos = [];
+    $('#cielo-mensaje').textContent = 'No se pudieron cargar los altares públicos. Revisa tu conexión e inténtalo de nuevo.';
   }
   altaresPublicosListos = true;
   pintarCielo();
-  if (!ejemplos && altaresPublicos.length === 0) {
+  if (altaresPublicos.length === 0) {
     $('#cielo-seleccion').textContent = 'Todavía no hay altares ubicados en este cielo.';
   }
 }

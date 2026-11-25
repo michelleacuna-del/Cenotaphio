@@ -711,7 +711,6 @@ img { display: block; max-width: 100%; }
   border-radius: 50%;
   content: '';
 }
-.cielo-estrella-ejemplo::before { background: #c8c0dc; box-shadow: 0 0 9px 3px rgba(200, 192, 220, .3); }
 .cielo-nombre {
   position: absolute;
   top: 80%;
