@@ -173,7 +173,7 @@
             <label>Vertical <input id="cielo-y" type="range" min="8" max="92" value="50"></label>
             <button class="btn btn-suave" id="cielo-guardar-punto" type="button">Guardar este punto</button>
           </fieldset>
-          <p class="cielo-ayuda oculto" id="cielo-ayuda">Selecciona un altar público y luego toca un punto dentro de la imagen para ubicarlo. El punto es simbólico; no muestra una dirección.</p>
+          <p class="cielo-ayuda oculto" id="cielo-ayuda">Selecciona un altar y guarda un punto para que aparezca en Explorar. La posición es simbólica y no muestra una dirección.</p>
         </div>
       </section>
     </section>
@@ -273,8 +273,8 @@
         <h2>Cuenta y respaldos</h2>
         <p>Si creas una cuenta, Supabase administra el registro e inicio de sesión con tu correo electrónico y contraseña. Los respaldos de tus altares se guardan en Supabase asociados a tu cuenta. La aplicación no incluye la contraseña dentro de esos respaldos.</p>
 
-        <h2>Altares públicos y privados</h2>
-        <p>Los altares son públicos por defecto y pueden mostrarse en «Explorar» cuando tienen una ubicación simbólica. Puedes marcar un altar como privado para que no aparezca allí. La ubicación del cielo es simbólica y no muestra una dirección real.</p>
+        <h2>Altares en Explorar</h2>
+        <p>Un altar solo aparece en «Explorar» cuando eliges y guardas un punto simbólico para él. Al guardar el punto, se muestra su nombre y esa posición en el cielo; no es una dirección real. Los altares que estaban marcados como privados anteriormente siguen ocultos hasta que vuelvas a guardar un punto.</p>
 
         <h2>Almacenamiento y servicios externos</h2>
         <p>El navegador puede conservar preferencias de visualización y datos antiguos de altares. La importación de esos datos a una cuenta requiere tu confirmación. La aplicación usa Supabase para la cuenta y los respaldos, y Google Fonts para cargar algunas tipografías.</p>
@@ -342,8 +342,7 @@
       </div>
       <label class="campo"><span>Una frase</span><input name="frase" placeholder="Algo que lo o la describa"></label>
       <label class="campo"><span>Unas palabras</span><textarea name="bio" rows="3" placeholder="Lo que quieras contar…"></textarea></label>
-      <label class="campo-privacidad"><input name="privado" type="checkbox"><span>Hacer este altar privado</span></label>
-      <small class="privacidad-ayuda">Los altares privados no aparecen en Explorar. La posición que elijas en el cielo es simbólica y no muestra una dirección real.</small>
+      <small class="ubicacion-ayuda">Este altar solo aparecerá en Explorar si eliges y guardas un punto para él.</small>
       <div class="campo"><span>Retrato</span><label class="campo-imagen"><input type="file" name="foto" accept="image/*"><span class="previa"></span></label></div>
       <div class="formulario-acciones">
         <button class="btn btn-principal" value="ok">Guardar</button>

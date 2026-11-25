@@ -330,26 +330,26 @@ function pintarCielo() {
       : 'Todavía no hay altares ubicados en este cielo.';
   }
 
-  const publicos = usuarioActual && estado ? altaresLocalesPublicos() : [];
+  const disponibles = usuarioActual && estado ? perfilesVisibles().filter(p => !p.soloLectura) : [];
   selector.replaceChildren();
   const opcionInicial = document.createElement('option');
   opcionInicial.value = '';
   opcionInicial.disabled = true;
   opcionInicial.selected = true;
   opcionInicial.textContent = usuarioActual
-    ? publicos.length ? 'Elige un altar' : 'No tienes altares públicos'
+    ? disponibles.length ? 'Elige un altar' : 'No tienes altares'
     : clienteSupabase ? 'Inicia sesión o crea una cuenta' : 'Exploración pública';
   selector.append(opcionInicial);
-  for (const perfil of publicos) {
+  for (const perfil of disponibles) {
     const opcion = document.createElement('option');
     opcion.value = perfil.id;
     opcion.textContent = perfil.nombre;
     selector.append(opcion);
   }
-  selector.disabled = publicos.length === 0;
-  $('#cielo-ubicar').disabled = publicos.length === 0;
-  if (!publicos.length && usuarioActual) {
-    $('#cielo-mensaje').textContent = 'Para ubicar un altar, primero hazlo público desde Mi altar.';
+  selector.disabled = disponibles.length === 0;
+  $('#cielo-ubicar').disabled = disponibles.length === 0;
+  if (!disponibles.length && usuarioActual) {
+    $('#cielo-mensaje').textContent = 'Crea un altar en Mi altar para elegir un punto y mostrarlo en Explorar.';
   }
   if (altares.length === 0) {
     $('#cielo-seleccion').textContent = 'Todavía no hay altares ubicados en este cielo.';
@@ -375,7 +375,7 @@ function actualizarPreviaCielo() {
 
 function iniciarUbicacion() {
   const perfil = perfilesVisibles().find(p => p.id === $('#altar-explorar').value);
-  if (!perfil || perfil.privado || perfil.soloLectura) return;
+  if (!perfil || perfil.soloLectura) return;
   altarEnColocacion = perfil.id;
   const punto = puntoCieloValido(perfil.puntoCielo) ? perfil.puntoCielo : { x: 50, y: 50 };
   $('#cielo-x').value = punto.x;
@@ -383,13 +383,13 @@ function iniciarUbicacion() {
   $('#cielo').classList.add('ubicando');
   $('#cielo-coordenadas').hidden = false;
   $('#cielo-ayuda').textContent = 'Toca un punto dentro de la imagen o ajusta la posición con los controles y guárdala.';
-  $('#cielo-mensaje').textContent = `Elige un punto para el altar de ${perfil.nombre}.`;
+  $('#cielo-mensaje').textContent = `Elige un punto para el altar de ${perfil.nombre}. Al guardarlo, se mostrará en Explorar.`;
   actualizarPreviaCielo();
 }
 
 function guardarPuntoCielo(x, y) {
   const perfil = perfilesVisibles().find(p => p.id === altarEnColocacion);
-  if (!perfil || perfil.privado || perfil.soloLectura) {
+  if (!perfil || perfil.soloLectura) {
     altarEnColocacion = null;
     $('#cielo').classList.remove('ubicando');
     $('#cielo-coordenadas').hidden = true;
@@ -398,6 +398,7 @@ function guardarPuntoCielo(x, y) {
     return;
   }
   perfil.puntoCielo = { x: +x.toFixed(1), y: +y.toFixed(1) };
+  delete perfil.privado;
   const nombre = perfil.nombre;
   altarSeleccionado = perfil.id;
   altarEnColocacion = null;
@@ -737,7 +738,7 @@ function formPerfil(p) {
   abrir(d, p || {}, (datos, valor) => {
     if (valor !== 'ok') return;
     const tonos = [350, 20, 42, 95, 150, 190, 215, 260, 300];
-    if (!p) estado.perfiles.push(p = { id: uid(), hue: tonos[Math.random() * tonos.length | 0], foto: '', privado: false, objetos: [], conexiones: [] });
+    if (!p) estado.perfiles.push(p = { id: uid(), hue: tonos[Math.random() * tonos.length | 0], foto: '', objetos: [], conexiones: [] });
     Object.assign(p, datos);
     guardar();
     ir('#/perfil/' + p.id);
@@ -1009,7 +1010,9 @@ $('#crear-cuenta').addEventListener('click', () => {
   $('#recuperar-clave').hidden = modoRegistro;
   $('#campo-clave input').autocomplete = modoRegistro ? 'new-password' : 'current-password';
   $('#acceso h1').textContent = modoRegistro ? 'Crear cuenta' : 'Iniciar sesión';
-  $('#acceso-mensaje').textContent = modoRegistro ? 'Usa una contraseña de al menos 8 caracteres.' : '';
+  $('#acceso-mensaje').textContent = modoRegistro
+    ? 'Usa una contraseña de al menos 8 caracteres; considera usar mayúsculas, minúsculas y números.'
+    : '';
 });
 
 $('#form-acceso').addEventListener('submit', async e => {
@@ -1028,7 +1031,7 @@ $('#form-acceso').addEventListener('submit', async e => {
       });
       if (error) throw error;
       if (data.session) await cargarCuenta(data.session);
-      else $('#acceso-mensaje').textContent = 'Cuenta creada. Revisa tu correo para confirmar el registro e iniciar sesión.';
+      else $('#acceso-mensaje').textContent = 'Cuenta creada, para confirmar revisa tu correo.';
     } else {
       const { data, error } = await clienteSupabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
