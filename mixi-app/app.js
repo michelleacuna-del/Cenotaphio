@@ -34,7 +34,7 @@ function semilla() {
     puntoCielo: a.dataset.cieloX && a.dataset.cieloY
       ? { x: +a.dataset.cieloX, y: +a.dataset.cieloY } : null,
     nombre: dato(a, 'nombre'), relacion: dato(a, 'relacion'), nacimiento: dato(a, 'nacimiento'),
-    partida: dato(a, 'partida'), frase: dato(a, 'frase'), bio: dato(a, 'bio'),
+    partida: dato(a, 'partida'), frase: dato(a, 'frase'), bio: dato(a, 'bio'), proceso_perdida: dato(a, 'proceso_perdida'),
     objetos: $$('.recuerdo', a).map(r => ({
       id: r.dataset.codigo, tipo: r.dataset.tipo, x: +r.dataset.x || 50, y: +r.dataset.y || 50, foto: r.dataset.foto || '',
       nombre: dato(r, 'nombre'), fecha: dato(r, 'fecha'), lugar: dato(r, 'lugar'), descripcion: dato(r, 'descripcion'),
@@ -479,7 +479,7 @@ function pintarPerfil() {
   const { p } = actual, sec = $('[data-vista=perfil]'), hay = p.objetos.length;
   sec.style.setProperty('--h', p.hue);
   retrato($('.retrato', sec), p);
-  llenar(sec, { nombre: p.nombre, relacion: p.relacion || texto('relacion-vacia'), fechas: rango(p, fecha) || texto('fechas-vacias'), frase: p.frase, bio: p.bio });
+  llenar(sec, { nombre: p.nombre, relacion: p.relacion || texto('relacion-vacia'), fechas: rango(p, fecha) || texto('fechas-vacias'), frase: p.frase, bio: p.bio, proceso_perdida: p.proceso_perdida });
   $('#perfil-referencia').hidden = !p.soloLectura;
   $('.perfil-cabecera .acciones', sec).hidden = !!p.soloLectura;
   $('.archivo-barra .herramientas', sec).hidden = !!p.soloLectura;
