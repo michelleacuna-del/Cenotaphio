@@ -438,8 +438,8 @@ img { display: block; max-width: 100%; }
 .cenotafio-llavero,
 .cenotafio-plato {
   display: block;
-  width: 78%;
-  height: 100%;
+  width: 65%;
+  height: 80%;
   object-fit: contain;
   transform: translateY(18%);
 }
@@ -654,25 +654,21 @@ img { display: block; max-width: 100%; }
 .cielo {
   position: relative;
   isolation: isolate;
-  container-type: size;
   flex: 1;
   width: 100%;
   height: auto;
   min-height: 0;
   overflow: hidden;
   margin: 0;
-  background: #2b2b2b url("files/web_diseñoMesa de trabajo 9constelacion.png") center top / contain no-repeat;
+  background: #090a0d url("files/cielo-explorar.png") center / cover no-repeat;
   box-shadow: inset 0 0 80px rgba(11, 14, 24, .45);
   cursor: crosshair;
 }
 .cielo-estrellas {
   position: absolute;
-  top: 0;
-  left: 50%;
-  width: min(100%, 121.8cqh);
-  height: auto;
-  aspect-ratio: 10687 / 8775;
-  transform: translateX(-50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .cielo-estrella {
   position: absolute;
@@ -697,18 +693,27 @@ img { display: block; max-width: 100%; }
   background: #f3e5c4;
   box-shadow: 0 0 9px 3px rgba(243, 229, 196, .34), 0 0 24px rgba(243, 229, 196, .35);
   content: '';
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease, border-color .25s ease;
 }
-.cielo-estrella:hover::before, .cielo-estrella[aria-pressed="true"]::before {
+.cielo-estrella:hover::before {
   transform: scale(1.5);
   box-shadow: 0 0 12px 5px rgba(243, 229, 196, .42), 0 0 34px rgba(243, 229, 196, .5);
 }
+.cielo-estrella[aria-pressed="true"]::before {
+  border-color: #e4f8ff;
+  background: #9de6ff;
+  transform: scale(1.65);
+  box-shadow: 0 0 15px 6px rgba(110, 207, 255, .82), 0 0 40px 14px rgba(79, 180, 255, .7), 0 0 70px rgba(79, 180, 255, .45);
+}
 .cielo-estrella[aria-pressed="true"]::after {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(243, 229, 196, .4);
+  inset: 0;
+  width: 36px;
+  height: 36px;
+  margin: auto;
+  border: 1px solid rgba(156, 226, 255, .85);
   border-radius: 50%;
+  box-shadow: 0 0 16px 4px rgba(79, 180, 255, .38);
   content: '';
 }
 .cielo-nombre {
